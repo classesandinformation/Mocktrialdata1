@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Quize Feb Mix 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ece4;
+    --surface: #faf7f2;
+    --surface2: #e8e2d8;
+    --border: #d4ccc0;
+    --accent: #c47b2e;
+    --accent2: #7b5ea7;
+    --text: #2a2320;
+    --text2: #5c5048;
+    --text3: #8a7d74;
+    --correct: #3a8a5c;
+    --wrong: #c0392b;
+    --correct-bg: #eaf5ee;
+    --wrong-bg: #fdecea;
+    --shadow: rgba(80,60,40,0.12);
+    --radius: 14px;
+    --font: 'Nunito', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .screen {
+    display: none;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    padding: 0 0 80px;
+    position: relative;
+  }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* HEADER STRIP */
+  .header-strip {
+    background: linear-gradient(135deg, #c47b2e 0%, #9b5e1a 100%);
+    color: #fff;
+    padding: 18px 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .header-strip h1 {
+    font-family: 'Merriweather', serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .header-strip p { font-size: 12px; opacity: 0.85; }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px var(--shadow);
+    padding: 20px;
+    margin: 16px;
+  }
+
+  /* INSTRUCTION SCREEN */
+  #instrScreen .card h2 {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .instr-list { list-style: none; }
+  .instr-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--surface2);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text2);
+  }
+  .instr-list li:last-child { border-bottom: none; }
+  .instr-list li span.icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .badge {
+    display: inline-block;
+    background: #f5ede0;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid #e0ceb0;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #c47b2e, #9b5e1a);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font);
+    width: 100%;
+    cursor: pointer;
+    margin-top: 18px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 3px 10px rgba(196,123,46,0.3);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-primary:active { transform: scale(0.98); box-shadow: none; }
+
+  /* LOGIN SCREEN */
+  #loginScreen .header-strip { padding-bottom: 20px; }
+  .login-logo {
+    font-size: 48px;
+    text-align: center;
+    padding: 10px 0 4px;
+  }
+  .login-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px var(--shadow);
+    padding: 24px 20px;
+    margin: 16px;
+  }
+  .login-card h2 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .login-card p {
+    font-size: 12.5px;
+    color: var(--text3);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .form-group input {
+    width: 100%;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: var(--font);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus { border-color: var(--accent); }
+  .error-msg {
+    color: var(--wrong);
+    font-size: 12.5px;
+    margin-top: 10px;
+    text-align: center;
+    min-height: 18px;
+  }
+
+  /* QUIZ SCREEN */
+  #quizScreen { padding-bottom: 140px; }
+  .quiz-header {
+    background: linear-gradient(135deg, #c47b2e 0%, #9b5e1a 100%);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .quiz-title {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.9;
+  }
+  .q-counter {
+    font-size: 13px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.2);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.25);
+  }
+  .progress-fill {
+    height: 100%;
+    background: #fff;
+    transition: width 0.3s ease;
+  }
+
+  .section-label {
+    margin: 12px 16px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 10px var(--shadow);
+    margin: 0 12px;
+    padding: 18px 16px 14px;
+  }
+  .q-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    margin-bottom: 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .option:active { transform: scale(0.98); }
+  .option.selected { border-color: var(--accent); background: #f9f0e4; }
+  .option.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .option.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.disabled { cursor: default; pointer-events: none; }
+
+  .opt-letter {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text2);
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .option.selected .opt-letter { background: var(--accent); color: #fff; }
+  .option.correct .opt-letter { background: var(--correct); color: #fff; }
+  .option.wrong .opt-letter { background: var(--wrong); color: #fff; }
+  .opt-text { font-size: 14px; color: var(--text); line-height: 1.4; flex: 1; }
+  .opt-icon { font-size: 16px; margin-left: auto; flex-shrink: 0; }
+
+  /* EXPLANATION */
+  .expl-toggle {
+    margin: 10px 12px 0;
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text2);
+    font-family: var(--font);
+    cursor: pointer;
+    width: calc(100% - 24px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    transition: border-color 0.2s;
+  }
+  .expl-toggle:hover { border-color: var(--accent2); color: var(--accent2); }
+  .expl-toggle.hidden-btn { display: none; }
+
+  .explanation-box {
+    margin: 8px 12px 0;
+    background: #f0ecf8;
+    border: 1.5px solid #c9b8e8;
+    border-radius: 10px;
+    padding: 13px 14px;
+    font-size: 13.5px;
+    color: #3d2f6b;
+    line-height: 1.6;
+    display: none;
+  }
+  .explanation-box.visible { display: block; }
+
+  /* NAV BUTTONS */
+  .nav-bar {
+    position: fixed;
+    bottom: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    z-index: 20;
+  }
+  .btn-nav {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--font);
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-prev {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1.5px solid var(--border);
+  }
+  .btn-next {
+    background: linear-gradient(135deg, #c47b2e, #9b5e1a);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(196,123,46,0.3);
+  }
+  .btn-submit {
+    background: linear-gradient(135deg, #3a8a5c, #26664a);
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(58,138,92,0.3);
+  }
+  .btn-nav:active { transform: scale(0.97); }
+
+  /* SECTION PANEL */
+  .section-panel {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background: var(--surface);
+    border-top: 2px solid var(--border);
+    z-index: 30;
+    transition: transform 0.3s ease;
+  }
+  .section-panel.minimized { transform: translateX(-50%) translateY(calc(100% - 44px)); }
+  .section-handle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    height: 44px;
+    cursor: pointer;
+    background: #ede8df;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-handle span {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toggle-arrow { font-size: 14px; transition: transform 0.3s; }
+  .section-panel.minimized .toggle-arrow { transform: rotate(180deg); }
+  .section-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .section-tabs::-webkit-scrollbar { display: none; }
+  .sec-tab {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: var(--font);
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .sec-tab.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .sec-tab .sec-count {
+    font-size: 10px;
+    opacity: 0.75;
+    margin-left: 4px;
+  }
+
+  /* RESULT SCREEN */
+  #resultScreen .header-strip {
+    background: linear-gradient(135deg, #3a8a5c 0%, #26664a 100%);
+    text-align: center;
+    padding: 24px 20px 20px;
+    align-items: center;
+  }
+  .result-emoji { font-size: 52px; text-align: center; padding: 8px 0; }
+  .score-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid rgba(255,255,255,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 12px auto;
+  }
+  .score-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--correct);
+    line-height: 1;
+  }
+  .score-den { font-size: 13px; color: var(--text3); margin-top: 2px; }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .stat-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .stat-val { font-size: 20px; font-weight: 800; }
+  .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .stat-box.c .stat-val { color: var(--correct); }
+  .stat-box.w .stat-val { color: var(--wrong); }
+  .stat-box.s .stat-val { color: var(--accent2); }
+
+  .review-list { margin-top: 4px; }
+  .review-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    background: var(--surface);
+  }
+  .review-q { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+  .review-ans {
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .tag.c { background: var(--correct-bg); color: var(--correct); }
+  .tag.w { background: var(--wrong-bg); color: var(--wrong); }
+  .tag.skip { background: #ede; color: #777; }
+  .review-expl { font-size: 12px; color: var(--text3); margin-top: 6px; line-height: 1.5; }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--font);
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  /* Q PALETTE */
+  .q-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 16px 14px;
+  }
+  .palette-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    color: var(--text2);
+    transition: all 0.1s;
+  }
+  .palette-dot.answered { background: #c9e8d5; border-color: #7bc49a; color: #2a6e48; }
+  .palette-dot.current { border-color: var(--accent); background: #f9f0e4; color: var(--accent); }
+  .palette-dot.wrong-dot { background: #fdddd9; border-color: #e88880; color: #9b2a24; }
+
+  /* Animations */
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .question-card { animation: fadeSlide 0.2s ease; }
+
+  .correct-pulse {
+    animation: correctPop 0.35s ease;
+  }
+  @keyframes correctPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── INSTRUCTION SCREEN ─── -->
+<div id="instrScreen" class="screen active">
+  <div class="header-strip">
+    <h1>📋 Exam Instructions</h1>
+    <p>Quize Feb Mix 2 — General Knowledge · Odisha Special</p>
+  </div>
+  <div class="card">
+    <h2>📌 Important Instructions</h2>
+    <ul class="instr-list">
+      <li><span class="icon">🕒</span><span>This exam contains <strong>20 questions</strong> divided into sections. Attempt all questions.</span></li>
+      <li><span class="icon">✅</span><span>Each correct answer carries <strong>1 mark</strong>. No negative marking for wrong answers.</span></li>
+      <li><span class="icon">👆</span><span>Tap any option to select your answer. Your selection is saved automatically.</span></li>
+      <li><span class="icon">🔁</span><span>Use <strong>Previous</strong> and <strong>Next</strong> buttons to navigate between questions.</span></li>
+      <li><span class="icon">📂</span><span>Use the <strong>Section bar</strong> at the bottom to jump between sections. Tap the bar to expand/minimize.</span></li>
+      <li><span class="icon">💡</span><span>After answering, tap the <span class="badge">View Explanation</span> button to see the explanation.</span></li>
+      <li><span class="icon">🔢</span><span>The question palette shows your progress — <span style="color:#2a6e48;font-weight:700;">green</span> = answered, <span style="color:#9b2a24;font-weight:700;">red</span> = wrong (visible in review).</span></li>
+      <li><span class="icon">🚫</span><span>Do not refresh or close the browser tab during the exam as your progress may be lost.</span></li>
+      <li><span class="icon">🔐</span><span>Your exam session is protected. Credentials are required to access this exam.</span></li>
+      <li><span class="icon">🏁</span><span>Press <strong>Submit</strong> on the last question or from any question to end the exam and view your results.</span></li>
+    </ul>
+    <button class="btn-primary" onclick="goToLogin()">Proceed to Login →</button>
+  </div>
+</div>
+
+<!-- ─── LOGIN SCREEN ─── -->
+<div id="loginScreen" class="screen">
+  <div class="header-strip">
+    <h1>Quize Feb Mix 2</h1>
+    <p>Login to access your exam</p>
+  </div>
+  <div style="padding: 0 0 8px;">
+    <div class="login-logo">🎓</div>
+  </div>
+  <div class="login-card">
+    <h2>Candidate Login</h2>
+    <p>Enter your mobile number & exam password</p>
+    <div class="form-group">
+      <label>Mobile Number</label>
+      <input type="tel" id="mobileInput" placeholder="Enter your mobile number" maxlength="10" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="passInput" placeholder="Enter exam password" maxlength="20">
+    </div>
+    <div class="error-msg" id="loginError"></div>
+    <button class="btn-primary" onclick="doLogin()">Start Exam →</button>
+    <button class="btn-secondary" onclick="showScreen('instrScreen')" style="margin-top:10px;">← Back to Instructions</button>
+  </div>
+  <div style="text-align:center; margin-top: 12px; font-size:12px; color:var(--text3);">
+    Contact your instructor for the exam password
+  </div>
+</div>
+
+<!-- ─── QUIZ SCREEN ─── -->
+<div id="quizScreen" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-title" id="sectionTitle">Section A · Odisha History</div>
+    <div class="q-counter" id="qCounter">Q 1 / 20</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+
+  <div class="section-label" id="sectionLabel">Section A — Odisha History</div>
+
+  <div class="question-card" id="questionCard">
+    <div class="q-num" id="qNum">Question 01</div>
+    <div class="q-text" id="qText">Loading…</div>
+    <div id="optionsContainer"></div>
+  </div>
+
+  <button class="expl-toggle hidden-btn" id="explToggleBtn" onclick="toggleExpl()">
+    💡 View Explanation
+  </button>
+  <div class="explanation-box" id="explanationBox"></div>
+
+  <!-- Q Palette -->
+  <div style="margin: 14px 12px 4px; font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.6px;">Question Palette</div>
+  <div class="q-palette" id="qPalette"></div>
+
+  <!-- Nav buttons -->
+  <div class="nav-bar">
+    <button class="btn-nav btn-prev" onclick="prevQ()">← Prev</button>
+    <button class="btn-nav btn-next" id="nextBtn" onclick="nextQ()">Next →</button>
+  </div>
+
+  <!-- Section Panel -->
+  <div class="section-panel" id="sectionPanel">
+    <div class="section-handle" onclick="toggleSectionPanel()">
+      <span>📂 Sections</span>
+      <span class="toggle-arrow" id="panelArrow">▲</span>
+    </div>
+    <div class="section-tabs" id="sectionTabs"></div>
+  </div>
+</div>
+
+<!-- ─── RESULT SCREEN ─── -->
+<div id="resultScreen" class="screen">
+  <div class="header-strip" style="background: linear-gradient(135deg,#3a8a5c,#26664a); align-items:center; text-align:center;">
+    <h1 style="width:100%;">🏆 Exam Completed</h1>
+    <p id="candidateName" style="width:100%;">Well done, candidate!</p>
+  </div>
+  <div class="card" style="padding:18px;">
+    <div class="score-circle">
+      <div class="score-num" id="scoreNum">0</div>
+      <div class="score-den" id="scoreDen">out of 20</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box c"><div class="stat-val" id="correctCount">0</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat-box w"><div class="stat-val" id="wrongCount">0</div><div class="stat-lbl">Wrong</div></div>
+      <div class="stat-box s"><div class="stat-val" id="skipCount">0</div><div class="stat-lbl">Skipped</div></div>
+    </div>
+    <div id="performMsg" style="text-align:center; font-size:14px; font-weight:700; padding: 8px 0 14px; color: var(--accent2);"></div>
+  </div>
+  <div class="card" style="margin-top:0;">
+    <div style="font-size:14px; font-weight:800; color:var(--text); margin-bottom:14px;">📝 Question Review</div>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+  <!-- Formspree status card -->
+  <div class="card" style="margin-top:0; padding:14px 16px;">
+    <div style="font-size:13px; font-weight:700; color:var(--text2); margin-bottom:8px;">📤 Result Submission</div>
+    <div id="formspreeStatus" style="font-size:13px; font-weight:600; padding:10px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text3);">Waiting to submit…</div>
+    <div id="submissionMeta" style="margin-top:8px; font-size:11.5px; color:var(--text3); line-height:1.8;"></div>
+  </div>
+  <div style="padding: 0 16px 20px;">
+    <button class="btn-primary" onclick="retakeExam()">🔁 Retake Exam</button>
+  </div>
+</div>
+
+<script>
+const CORRECT_PASS = "2026";
+
+const sections = [
+  { id: "A", name: "Odisha History", label: "Sec A · History" },
+  { id: "B", name: "Odisha Geography", label: "Sec B · Geography" },
+  { id: "C", name: "Odisha Culture & Art", label: "Sec C · Culture" },
+  { id: "D", name: "Odisha Misc", label: "Sec D · Misc" }
+];
+
+const questions = [
+  // Section A — Odisha History (Q 1–5)
+  {
+    section: 0,
+    q: "Who was the famous king of Kalinga during the Kalinga War?",
+    opts: ["Ashoka", "Kharavela", "Anantavarman", "Karavela"],
+    ans: 1,
+    expl: "Kharavela was the great Jain king of Kalinga (Odisha). The Kalinga War was fought between Mauryan Emperor Ashoka and the Kalinga kingdom. After this devastating war, Ashoka embraced Buddhism and non-violence."
+  },
+  {
+    section: 0,
+    q: "The Kalinga War was fought in which year?",
+    opts: ["326 BCE", "261 BCE", "1857 CE", "1206 CE"],
+    ans: 1,
+    expl: "The Kalinga War was fought in 261 BCE between Emperor Ashoka of the Maurya dynasty and the kingdom of Kalinga (present-day Odisha). It was one of the bloodiest battles in ancient Indian history, resulting in massive loss of life."
+  },
+  {
+    section: 0,
+    q: "Konark Sun Temple was built by which king?",
+    opts: ["Kharavela", "Narasimhadeva I", "Ashoka", "Kapilendra Deva"],
+    ans: 1,
+    expl: "The Konark Sun Temple was built by King Narasimhadeva I of the Eastern Ganga dynasty around 1250 CE. It is designed as a gigantic chariot of the Sun God Surya and is a UNESCO World Heritage Site."
+  },
+  {
+    section: 0,
+    q: "The Udayagiri and Khandagiri caves are associated with which religion?",
+    opts: ["Buddhism", "Jainism", "Hinduism", "Sikhism"],
+    ans: 1,
+    expl: "Udayagiri and Khandagiri caves near Bhubaneswar are ancient rock-cut caves associated with Jainism. They were largely built during the reign of Jain king Kharavela in the 1st century BCE, and contain inscriptions and carvings of Jain themes."
+  },
+  {
+    section: 0,
+    q: "Dhauli is famous for:",
+    opts: ["A famous temple", "Ashokan edicts and rock edicts", "An ancient fort", "A history museum"],
+    ans: 1,
+    expl: "Dhauli, located near Bhubaneswar, is famous for the Ashokan Rock Edicts. After the Kalinga War, Emperor Ashoka issued major rock edicts here preaching dharma (righteousness), non-violence and compassion. A white Shanti Stupa was also built here in the 1970s."
+  },
+
+  // Section B — Odisha Geography (Q 6–12)
+  {
+    section: 1,
+    q: "Chilika Lake is famous for which of the following?",
+    opts: ["It is a freshwater lake", "It is a saltwater lake", "It is a brackish water lagoon", "It is an artificial lake"],
+    ans: 2,
+    expl: "Chilika Lake is Asia's largest brackish water lagoon, located in Odisha. It is a mix of fresh and saline water fed by rivers and the Bay of Bengal. It is a Ramsar Wetland of International Importance and a key habitat for migratory birds."
+  },
+  {
+    section: 1,
+    q: "Which river is known as the 'lifeline of Odisha'?",
+    opts: ["Mahanadi", "Brahmani", "Baitarani", "Subarnarekha"],
+    ans: 0,
+    expl: "The Mahanadi (meaning 'Great River') is called the lifeline of Odisha. It is the most important river of the state, used for irrigation, drinking water, and the famous Hirakud Dam is built on it. It drains into the Bay of Bengal."
+  },
+  {
+    section: 1,
+    q: "The capital of Odisha is:",
+    opts: ["Cuttack", "Puri", "Bhubaneswar", "Sambalpur"],
+    ans: 2,
+    expl: "Bhubaneswar is the capital of Odisha. It is also known as the 'Temple City of India' due to its large number of temples. Cuttack was the old capital. Bhubaneswar became the capital after Indian independence."
+  },
+  {
+    section: 1,
+    q: "The Hirakud Dam is built on which river?",
+    opts: ["Brahmani", "Mahanadi", "Baitarani", "Rushikulya"],
+    ans: 1,
+    expl: "Hirakud Dam is built on the Mahanadi river near Sambalpur, Odisha. Completed in 1957, it is one of the longest earthen dams in the world at about 26 km. It provides flood control, irrigation, and hydroelectric power."
+  },
+  {
+    section: 1,
+    q: "Simlipal National Park is famous for:",
+    opts: ["Tigers", "Elephants", "Crocodiles", "Birds only"],
+    ans: 0,
+    expl: "Simlipal National Park in Mayurbhanj district, Odisha is famous for tigers. It is one of the largest tiger reserves in India, a Project Tiger reserve, and also a UNESCO Biosphere Reserve. It is also home to elephants and diverse wildlife."
+  },
+  {
+    section: 1,
+    q: "Which is the largest district of Odisha by area?",
+    opts: ["Mayurbhanj", "Koraput", "Ganjam", "Sundargarh"],
+    ans: 0,
+    expl: "Mayurbhanj is the largest district of Odisha by area. It covers about 10,418 sq km and is located in the northern part of the state. It is known for the Simlipal National Park and is home to tribal communities."
+  },
+  {
+    section: 1,
+    q: "Which major port is located in Odisha?",
+    opts: ["Paradip", "Mumbai", "Chennai", "Kochi"],
+    ans: 0,
+    expl: "Paradip Port (now Paradip International Cargo Terminal) is a major deep-water port located in Odisha on the Bay of Bengal. It is one of the 12 major ports of India and is especially important for handling iron ore and coal exports."
+  },
+
+  // Section C — Odisha Culture & Art (Q 13–20)
+  {
+    section: 2,
+    q: "Odissi dance is mainly associated with which deity?",
+    opts: ["Shiva", "Krishna", "Jagannath", "Durga"],
+    ans: 2,
+    expl: "Odissi is one of the oldest classical dance forms of India, originating in the temples of Odisha. It is dedicated primarily to Lord Jagannath (a form of Vishnu/Krishna). It was performed by devadasis (Maharis) in the Jagannath Temple, Puri."
+  },
+  {
+    section: 2,
+    q: "Jagannath Temple is located in:",
+    opts: ["Bhubaneswar", "Puri", "Cuttack", "Konark"],
+    ans: 1,
+    expl: "The famous Jagannath Temple is located in Puri, Odisha. It is one of the four sacred dhamas (pilgrimage sites) of Hinduism. Lord Jagannath, considered a form of Vishnu, is enshrined here along with Balabhadra and Subhadra."
+  },
+  {
+    section: 2,
+    q: "The famous Rath Yatra festival is held in:",
+    opts: ["Konark", "Puri", "Cuttack", "Sambalpur"],
+    ans: 1,
+    expl: "Rath Yatra (Chariot Festival) is held annually in Puri, Odisha. Huge chariots carrying Lord Jagannath, Balabhadra, and Subhadra are pulled by thousands of devotees. It is one of the world's largest religious gatherings."
+  },
+  {
+    section: 2,
+    q: "Which dance form originated in Odisha?",
+    opts: ["Bharatanatyam", "Kathak", "Odissi", "Kuchipudi"],
+    ans: 2,
+    expl: "Odissi is the classical dance form that originated in Odisha. It is characterized by its sculptural poses (influenced by temple sculptures), fluid movements, and devotional themes. Bharatanatyam is from Tamil Nadu, Kathak from north India, and Kuchipudi from Andhra Pradesh."
+  },
+  {
+    section: 2,
+    q: "Pipili is famous for which traditional craft?",
+    opts: ["Stone carving", "Applique work", "Pottery", "Metal work"],
+    ans: 1,
+    expl: "Pipili, a small town near Bhubaneswar, is world-renowned for its Applique work (Chandua). Artisans create colorful decorative items — canopies, parasols, bags, lampshades — by cutting and sewing fabric pieces to create intricate patterns, often used during Rath Yatra."
+  },
+  {
+    section: 2,
+    q: "The classical language status was given to Odia in which year?",
+    opts: ["2010", "2014", "2018", "2020"],
+    ans: 1,
+    expl: "Odia was declared a Classical Language of India in 2014, becoming the 6th language to receive this status (after Tamil, Sanskrit, Kannada, Telugu, and Malayalam). This recognition acknowledges Odia's ancient literary tradition of over 1000 years."
+  },
+  {
+    section: 2,
+    q: "Which tribe is predominantly found in Odisha?",
+    opts: ["Santhal", "Toda", "Naga", "Bhil"],
+    ans: 0,
+    expl: "The Santhal tribe is the largest tribal community found in Odisha (as well as Jharkhand, West Bengal and Assam). Odisha has one of the highest tribal populations in India with over 60 tribal groups, and Santhal is the predominant one mentioned."
+  },
+  {
+    section: 2,
+    q: "The famous Sambalpuri saree is known for:",
+    opts: ["Silk weaving", "Ikat pattern", "Cotton only", "Hand painting"],
+    ans: 1,
+    expl: "The Sambalpuri saree from Sambalpur, Odisha is famous for its unique Ikat (Bandha) pattern. In Ikat weaving, the yarn is tie-dyed before weaving, creating intricate geometric and traditional motifs. It has a GI (Geographical Indication) tag and is a prized Indian textile."
+  }
+];
+
+let userAnswers = new Array(questions.length).fill(null);
+let currentQ = 0;
+let sectionMinimized = true;
+let mobileNum = "";
+let explVisible = false;
+let examStartTime = null;
+let examStartISO = "";
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goToLogin() { showScreen('loginScreen'); }
+
+function doLogin() {
+  const mobile = document.getElementById('mobileInput').value.trim();
+  const pass = document.getElementById('passInput').value.trim();
+  const err = document.getElementById('loginError');
+
+  if (!mobile || mobile.length < 8) {
+    err.textContent = "⚠️ Please enter a valid mobile number.";
+    return;
+  }
+  if (pass !== CORRECT_PASS) {
+    err.textContent = "❌ Incorrect password. Please try again.";
+    document.getElementById('passInput').value = '';
+    return;
+  }
+  err.textContent = "";
+  mobileNum = mobile;
+  examStartTime = Date.now();
+  examStartISO = new Date().toLocaleString("en-IN", {timeZone:"Asia/Kolkata"});
+  initQuiz();
+  showScreen('quizScreen');
+}
+
+function initQuiz() {
+  userAnswers = new Array(questions.length).fill(null);
+  currentQ = 0;
+  buildSectionTabs();
+  buildPalette();
+  renderQuestion();
+  sectionMinimized = true;
+  document.getElementById('sectionPanel').classList.add('minimized');
+}
+
+function buildSectionTabs() {
+  const container = document.getElementById('sectionTabs');
+  container.innerHTML = '';
+  sections.forEach((sec, i) => {
+    const count = questions.filter(q => q.section === i).length;
+    const tab = document.createElement('button');
+    tab.className = 'sec-tab' + (i === questions[currentQ].section ? ' active' : '');
+    tab.innerHTML = `${sec.label} <span class="sec-count">(${count})</span>`;
+    tab.onclick = () => jumpToSection(i);
+    container.appendChild(tab);
+  });
+}
+
+function jumpToSection(secIdx) {
+  const firstQ = questions.findIndex(q => q.section === secIdx);
+  if (firstQ >= 0) {
+    currentQ = firstQ;
+    renderQuestion();
+    toggleSectionPanel(); // minimize after jump
+  }
+}
+
+function buildPalette() {
+  const p = document.getElementById('qPalette');
+  p.innerHTML = '';
+  questions.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'palette-dot';
+    d.textContent = i + 1;
+    d.id = `dot-${i}`;
+    d.onclick = () => { currentQ = i; renderQuestion(); };
+    p.appendChild(d);
+  });
+}
+
+function updatePalette() {
+  questions.forEach((q, i) => {
+    const d = document.getElementById(`dot-${i}`);
+    d.className = 'palette-dot';
+    if (i === currentQ) d.classList.add('current');
+    else if (userAnswers[i] !== null) d.classList.add('answered');
+  });
+}
+
+function renderQuestion() {
+  const qData = questions[currentQ];
+  const sec = sections[qData.section];
+
+  document.getElementById('sectionTitle').textContent = `Section ${sec.id} · ${sec.name}`;
+  document.getElementById('sectionLabel').textContent = `Section ${sec.id} — ${sec.name}`;
+  document.getElementById('qCounter').textContent = `Q ${currentQ + 1} / ${questions.length}`;
+  document.getElementById('progressFill').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+  document.getElementById('qNum').textContent = `Question ${String(currentQ + 1).padStart(2, '0')}`;
+  document.getElementById('qText').textContent = qData.q;
+
+  // Build options
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  const answered = userAnswers[currentQ] !== null;
+
+  qData.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    if (answered) {
+      div.classList.add('disabled');
+      if (i === qData.ans) div.classList.add('correct');
+      else if (i === userAnswers[currentQ]) div.classList.add('wrong');
+    } else {
+      div.onclick = () => selectAnswer(i);
+    }
+
+    const icon = answered
+      ? (i === qData.ans ? '<span class="opt-icon">✅</span>' : (i === userAnswers[currentQ] ? '<span class="opt-icon">❌</span>' : ''))
+      : '';
+
+    div.innerHTML = `<div class="opt-letter">${letters[i]}</div><div class="opt-text">${opt}</div>${icon}`;
+    container.appendChild(div);
+  });
+
+  // Explanation toggle
+  const explBtn = document.getElementById('explToggleBtn');
+  const explBox = document.getElementById('explanationBox');
+  explVisible = false;
+  explBox.classList.remove('visible');
+  explBox.textContent = qData.expl;
+  explBtn.innerHTML = '💡 View Explanation';
+
+  if (answered) {
+    explBtn.classList.remove('hidden-btn');
+  } else {
+    explBtn.classList.add('hidden-btn');
+  }
+
+  // Next/Submit button
+  const nextBtn = document.getElementById('nextBtn');
+  if (currentQ === questions.length - 1) {
+    nextBtn.textContent = '✔ Submit';
+    nextBtn.className = 'btn-nav btn-submit';
+    nextBtn.onclick = submitExam;
+  } else {
+    nextBtn.textContent = 'Next →';
+    nextBtn.className = 'btn-nav btn-next';
+    nextBtn.onclick = nextQ;
+  }
+
+  updatePalette();
+  updateSectionTabs();
+
+  // Scroll top
+  document.getElementById('quizScreen').scrollTo(0, 0);
+}
+
+function selectAnswer(idx) {
+  if (userAnswers[currentQ] !== null) return;
+  userAnswers[currentQ] = idx;
+  document.getElementById('explToggleBtn').classList.remove('hidden-btn');
+  renderQuestion();
+  // Add pulse to question card
+  const card = document.getElementById('questionCard');
+  card.classList.remove('correct-pulse');
+  void card.offsetWidth;
+  card.classList.add('correct-pulse');
+}
+
+function toggleExpl() {
+  explVisible = !explVisible;
+  const box = document.getElementById('explanationBox');
+  const btn = document.getElementById('explToggleBtn');
+  if (explVisible) {
+    box.classList.add('visible');
+    btn.innerHTML = '🙈 Hide Explanation';
+  } else {
+    box.classList.remove('visible');
+    btn.innerHTML = '💡 View Explanation';
+  }
+}
+
+function prevQ() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+function nextQ() {
+  if (currentQ < questions.length - 1) { currentQ++; renderQuestion(); }
+}
+
+function toggleSectionPanel() {
+  sectionMinimized = !sectionMinimized;
+  const panel = document.getElementById('sectionPanel');
+  if (sectionMinimized) panel.classList.add('minimized');
+  else panel.classList.remove('minimized');
+}
+
+function updateSectionTabs() {
+  document.querySelectorAll('.sec-tab').forEach((tab, i) => {
+    tab.classList.toggle('active', i === questions[currentQ].section);
+  });
+}
+
+function submitExam() {
+  if (confirm("Are you sure you want to submit the exam?")) {
+    showResults();
+  }
+}
+
+function showResults() {
+  showScreen('resultScreen');
+  let correct = 0, wrong = 0, skipped = 0;
+  questions.forEach((q, i) => {
+    if (userAnswers[i] === null) skipped++;
+    else if (userAnswers[i] === q.ans) correct++;
+    else wrong++;
+  });
+
+  document.getElementById('scoreNum').textContent = correct;
+  document.getElementById('scoreDen').textContent = `out of ${questions.length}`;
+  document.getElementById('correctCount').textContent = correct;
+  document.getElementById('wrongCount').textContent = wrong;
+  document.getElementById('skipCount').textContent = skipped;
+  document.getElementById('candidateName').textContent = `📱 ${mobileNum} — All the best!`;
+
+  const pct = (correct / questions.length) * 100;
+  let msg = '';
+  if (pct >= 90) msg = '🌟 Outstanding! Excellent performance!';
+  else if (pct >= 70) msg = '🎯 Great job! Well done!';
+  else if (pct >= 50) msg = '👍 Good effort! Keep practicing!';
+  else msg = '📚 Keep studying! You can do better!';
+  document.getElementById('performMsg').textContent = msg;
+
+  // Submit to Formspree
+  const durationMins = examStartTime ? Math.round((Date.now() - examStartTime) / 60000) : 0;
+  document.getElementById('formspreeStatus').innerHTML = '🔄 Submitting your result…';
+  document.getElementById('formspreeStatus').style.color = 'var(--text3)';
+  submitToFormspree(correct, wrong, skipped, durationMins);
+
+  // Review
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  questions.forEach((q, i) => {
+    const ua = userAnswers[i];
+    const isCorrect = ua === q.ans;
+    const isSkipped = ua === null;
+    const div = document.createElement('div');
+    div.className = 'review-item';
+
+    let statusTag = '';
+    if (isSkipped) statusTag = '<span class="tag skip">SKIPPED</span>';
+    else if (isCorrect) statusTag = '<span class="tag c">CORRECT</span>';
+    else statusTag = '<span class="tag w">WRONG</span>';
+
+    const yourAns = isSkipped ? '—' : `${['A','B','C','D'][ua]}) ${q.opts[ua]}`;
+    const corrAns = `${['A','B','C','D'][q.ans]}) ${q.opts[q.ans]}`;
+
+    div.innerHTML = `
+      <div class="review-q">Q${i+1}. ${q.q}</div>
+      <div class="review-ans">${statusTag} Your answer: ${yourAns}</div>
+      ${!isCorrect ? `<div class="review-ans"><span class="tag c">ANS</span> Correct: ${corrAns}</div>` : ''}
+      <div class="review-expl">${q.expl}</div>`;
+    reviewList.appendChild(div);
+  });
+}
+
+function submitToFormspree(correct, wrong, skipped, durationMins) {
+  const submitTime = new Date().toLocaleString("en-IN", {timeZone:"Asia/Kolkata"});
+  const pct = Math.round((correct / questions.length) * 100);
+  const qSummary = questions.map((q, i) => {
+    const ua = userAnswers[i];
+    const status = ua === null ? "Skipped" : (ua === q.ans ? "Correct" : "Wrong");
+    const given = ua === null ? "—" : `${["A","B","C","D"][ua]}) ${q.opts[ua]}`;
+    return `Q${i+1}: ${status} | Your: ${given} | Correct: ${"ABCD"[q.ans]}) ${q.opts[q.ans]}`;
+  }).join("\n");
+
+  const payload = {
+    mobile_number: mobileNum,
+    exam_name: "Quize Feb Mix 2",
+    start_time: examStartISO,
+    submit_time: submitTime,
+    duration_minutes: durationMins,
+    score: `${correct} / ${questions.length}`,
+    percentage: `${pct}%`,
+    correct_answers: correct,
+    wrong_answers: wrong,
+    skipped_questions: skipped,
+    question_wise_summary: qSummary
+  };
+
+  fetch("https://formspree.io/f/xqeyvdoe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(d => {
+    const el = document.getElementById("formspreeStatus");
+    const meta = document.getElementById("submissionMeta");
+    if (d.ok) {
+      el.innerHTML = `✅ Result submitted to instructor successfully!`;
+      el.style.color = "var(--correct)";
+      meta.innerHTML = `
+        📱 Mobile: <strong>${mobileNum}</strong><br>
+        🕐 Started: <strong>${examStartISO}</strong><br>
+        🕑 Submitted: <strong>${new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata"})}</strong><br>
+        ⏱️ Duration: <strong>${durationMins} min</strong><br>
+        🏆 Score: <strong>${payload.score} (${payload.percentage})</strong>
+      `;
+    } else {
+      el.innerHTML = `⚠️ Submission note: ${d.error || "check your connection."}`;
+      el.style.color = "var(--accent)";
+    }
+  })
+  .catch(() => {
+    const el = document.getElementById("formspreeStatus");
+    el.innerHTML = "⚠️ Could not submit — check internet connection.";
+    el.style.color = "var(--wrong)";
+  });
+}
+
+function retakeExam() {
+  showScreen('loginScreen');
+  document.getElementById('mobileInput').value = '';
+  document.getElementById('passInput').value = '';
+  document.getElementById('loginError').textContent = '';
+}
+
+// Enter key support
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('loginScreen').classList.contains('active')) {
+    doLogin();
+  }
+});
+</script>
+</body>
+</html>
